@@ -1,0 +1,27 @@
+﻿@model LibraryManagerPro.Models.Autor
+
+@{
+    ViewData["Title"] = "Detalhes do Autor";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Detalhes do Autor</h2>
+
+    <div class="card shadow-sm p-3">
+        <div class="card-body">
+            <h3 class="card-title fw-bold">@Model.Nome</h3>
+            <p class="card-text"><strong>Nacionalidade:</strong> @Model.Nacionalidade</p>
+            <p class="card-text"><strong>Nascimento:</strong> @Model.DataNascimento.ToShortDateString()</p>
+        </div>
+
+        <div class="card-footer text-center">
+            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Excluir</a>
+            }
+        </div>
+    </div>
+</div>
+

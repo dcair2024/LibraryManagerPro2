@@ -1,0 +1,49 @@
+﻿@model IEnumerable<LibraryManagerPro.Models.ViewModels.LivroViewModel>
+
+@{
+    ViewData["Title"] = "Livros";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">📚 Lista de Livros</h2>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var item in Model)
+        {
+            var capa = string.IsNullOrEmpty(item.CapaUrl)
+            ? "https://via.placeholder.com/200x300.png?text=Sem+Capa"
+            : item.CapaUrl;
+
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+
+                    <img src="@capa" class="card-img-top img-fluid"
+                                      style="height:250px; object-fit:cover;"
+                                      alt="Capa de @item.Titulo" />
+
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-bold">@item.Titulo</h5>
+                        <p class="card-text mb-1"><strong>Ano:</strong> @item.AnoPublicacao</p>
+                        <p class="card-text"><strong>Preço:</strong> @item.Preco.ToString("C")</p>
+                    </div>
+
+                    <div class="card-footer text-center">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Detalhes</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Excluir</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="mt-4 text-end">
+            <a asp-action="Create" class="btn btn-success">➕ Adicionar Novo Livro</a>
+        </div>
+    }
+</div>

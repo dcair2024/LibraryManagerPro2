@@ -1,0 +1,52 @@
+﻿@model LibraryManagerPro.Models.ViewModels.LivroViewModel
+
+@{
+    ViewData["Title"] = "Editar Livro";
+}
+
+<h2>Editar Livro</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />   <!-- OBRIGATÓRIO -->
+
+    <div class="mb-3">
+        <label asp-for="Titulo" class="form-label"></label>
+        <input asp-for="Titulo" class="form-control" />
+        <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Descricao" class="form-label"></label>
+        <textarea asp-for="Descricao" class="form-control"></textarea>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <label asp-for="AnoPublicacao" class="form-label"></label>
+            <input asp-for="AnoPublicacao" class="form-control" type="number" />
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Preco" class="form-label"></label>
+            <input asp-for="Preco" class="form-control" type="number" step="0.01" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CapaUrl" class="form-label"></label>
+        <input asp-for="CapaUrl" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="AutoresSelecionados"></label>
+        <select asp-for="AutoresSelecionados" asp-items="Model.AutoresDisponiveis" class="form-control" multiple="multiple"></select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

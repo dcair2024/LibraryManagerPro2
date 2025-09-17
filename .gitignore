@@ -1,0 +1,31 @@
+
+## 📄 .gitignore (otimizado para .NET + SQLite)
+
+```gitignore
+# Build results
+bin/
+obj/
+out/
+
+# VSCode / Rider / VS
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Log files
+*.log
+
+# SQLite database files (mas mantenha o .db inicial se for parte do seed)
+*.db-shm
+*.db-wal
+*.db-journal
+
+# Configurações sensíveis
+appsettings.Development.json
+appsettings.Local.json
+
+# Diretórios de publicação
+publish/

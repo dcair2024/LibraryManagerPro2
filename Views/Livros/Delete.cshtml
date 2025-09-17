@@ -1,0 +1,38 @@
+﻿@model LibraryManagerPro.Models.ViewModels.LivroViewModel
+@{
+    ViewData["Title"] = "Excluir Livro";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-danger">Excluir Livro</h2>
+
+    <div class="card shadow-sm border-danger">
+        <div class="row g-0">
+            <div class="col-md-4">
+                @if (!string.IsNullOrEmpty(Model.CapaUrl))
+                {
+                    <img src="@Model.CapaUrl" class="img-fluid rounded-start" alt="Capa" />
+                }
+                else
+                {
+                    <img src="https://via.placeholder.com/250x350.png?text=Sem+Capa" class="img-fluid rounded-start" alt="Sem capa" />
+                }
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h4 class="card-title">@Model.Titulo</h4>
+                    <p class="card-text">@Model.Descricao</p>
+                    <p><strong>Ano:</strong> @Model.AnoPublicacao</p>
+                    <p><strong>Preço:</strong> @Model.Preco.ToString("C")</p>
+                    <p><strong>Autores:</strong> @string.Join(", ", Model.AutoresNomes)</p>
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+                        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
