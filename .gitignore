@@ -10,4 +10,5 @@ library.db
 library_identity.db
 
 # Configuração local (chave secreta)
-appsettings.Development.json
+
+appsettings.json
