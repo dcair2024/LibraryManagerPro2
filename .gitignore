@@ -12,3 +12,4 @@ library_identity.db
 # Configuração local (chave secreta)
 
 appsettings.json
+"appsettings.Development.json" 
