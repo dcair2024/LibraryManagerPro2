@@ -1,4 +1,7 @@
-public interface IImageService
+namespace LibraryManagerPro.Services
 {
-    Task<string> GerarCapaAsync(string titulo, string descricao);
+    public interface IImageService
+    {
+        Task<string> GerarImagemAsync(string prompt);
+    }
 }

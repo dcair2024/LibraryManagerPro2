@@ -53,7 +53,11 @@
     </div>
 
 
-    <button type="submit" class="btn btn-success">Salvar</button>
+    <button type="submit" class="btn btn-primary"
+            onclick="this.disabled=true; this.innerText='Salvando...'; this.form.submit();">
+        Salvar
+    </button>
+
     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
 </form>
 

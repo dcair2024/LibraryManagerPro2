@@ -36,7 +36,11 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient<IImageService, FakeImageService>();
+builder.Services.AddSingleton<OpenAIImageService>();
+builder.Services.AddScoped<IImageService, OpenAIImageService>();
+
+builder.Services.AddScoped<OpenAIImageService>();
+
 
 
 

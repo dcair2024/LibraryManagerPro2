@@ -1,6 +1,8 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using System;
+using System.Linq;
 
 namespace LibraryManagerPro.Services
 {
@@ -13,6 +15,13 @@ namespace LibraryManagerPro.Services
         {
             _http = http;
             _http.BaseAddress = new Uri("http://localhost:5001");
+        }
+
+        public Task<string> GerarImagemAsync(string titulo)
+        {
+            // Retorna uma URL de placeholder para testes
+            string urlFake = "https://via.placeholder.com/300x400.png?text=Imagem+Fake";
+            return Task.FromResult(urlFake);
         }
 
         public async Task<string> GerarCapaAsync(string titulo, string descricao)
@@ -29,7 +38,7 @@ namespace LibraryManagerPro.Services
             }
             catch
             {
-                // Se o Flask estiver fora do ar, cai aqui
+                // Se o Flask estiver fora do ar, retorna a URL de fallback
             }
 
             return GerarFallbackUrl(titulo, descricao);

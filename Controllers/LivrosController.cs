@@ -133,6 +133,7 @@ public class LivrosController : Controller
     }
 
     // GET: Livros/Create
+    // GET: Livros/Create
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create()
     {
@@ -156,9 +157,53 @@ public class LivrosController : Controller
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(LivroViewModel vm)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            var capaUrl = await _imageService.GerarCapaAsync(vm.Titulo, vm.Descricao);
+            // Recarrega lista de autores se houver erro de validação
+            vm.AutoresDisponiveis = await _context.Autores
+                .OrderBy(a => a.Nome)
+                .Select(a => new SelectListItem
+                {
+                    Value = a.Id.ToString(),
+                    Text = a.Nome
+                })
+                .ToListAsync();
+
+            return View(vm);
+        }
+
+        try
+        {
+            // 🛡️ Proteção contra duplicatas (mesmo título)
+            if (await _context.Livros.AnyAsync(l => l.Titulo == vm.Titulo))
+            {
+                ModelState.AddModelError("Titulo", "Já existe um livro com este título.");
+                vm.AutoresDisponiveis = await _context.Autores
+                    .OrderBy(a => a.Nome)
+                    .Select(a => new SelectListItem
+                    {
+                        Value = a.Id.ToString(),
+                        Text = a.Nome
+                    })
+                    .ToListAsync();
+                return View(vm);
+            }
+
+            // 🎨 Geração automática da capa do livro
+            var prompt = !string.IsNullOrWhiteSpace(vm.Descricao)
+                ? $"{vm.Titulo} {vm.Descricao}"
+                : vm.Titulo;
+
+            string capaUrl;
+            try
+            {
+                capaUrl = await _imageService.GerarImagemAsync(prompt);
+            }
+            catch (Exception imgEx)
+            {
+                Console.WriteLine($"[Create] Erro ao gerar imagem: {imgEx.Message}");
+                capaUrl = "https://via.placeholder.com/300x400.png?text=Erro+na+Geração";
+            }
 
             var livro = new Livro
             {
@@ -169,18 +214,28 @@ public class LivrosController : Controller
                 CapaUrl = capaUrl
             };
 
-            foreach (var aid in vm.AutoresSelecionados)
+            // Associa autores selecionados ao livro
+            if (vm.AutoresSelecionados?.Any() == true)
             {
-                livro.Autores.Add(new LivroAutor { AutorId = aid });
+                foreach (var aid in vm.AutoresSelecionados)
+                {
+                    livro.Autores.Add(new LivroAutor { AutorId = aid });
+                }
             }
 
             _context.Livros.Add(livro);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "📚 Livro adicionado com sucesso!";
+            TempData["Success"] = "📚 Livro adicionado com sucesso! Capa gerada automaticamente.";
             return RedirectToAction(nameof(Index));
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Create] Erro ao salvar livro: {ex.Message}");
+            TempData["Error"] = "❌ Erro ao criar livro. Tente novamente.";
+        }
 
+        // Recarrega lista de autores em caso de erro
         vm.AutoresDisponiveis = await _context.Autores
             .OrderBy(a => a.Nome)
             .Select(a => new SelectListItem
@@ -192,6 +247,8 @@ public class LivrosController : Controller
 
         return View(vm);
     }
+
+
 
     // GET: Livros/Edit/5
     [Authorize(Roles = "Admin")]
@@ -257,8 +314,26 @@ public class LivrosController : Controller
             livro.Descricao = vm.Descricao;
             livro.AnoPublicacao = vm.AnoPublicacao;
             livro.Preco = vm.Preco;
-            livro.CapaUrl = vm.CapaUrl;
+            
+            // 🎨 Opção: Regenerar capa apenas se título ou descrição mudaram
+            // Descomente as linhas abaixo se quiser essa funcionalidade
+            /*
+            if (livro.Titulo != vm.Titulo || livro.Descricao != vm.Descricao)
+            {
+                var prompt = !string.IsNullOrWhiteSpace(vm.Descricao) 
+                    ? $"{vm.Titulo} {vm.Descricao}" 
+                    : vm.Titulo;
+                livro.CapaUrl = await _imageService.GerarImagemAsync(prompt);
+            }
+            else
+            {
+                livro.CapaUrl = vm.CapaUrl; // Mantém a capa atual
+            }
+            */
+            
+            livro.CapaUrl = vm.CapaUrl; // Mantém a capa atual
 
+            // Atualiza autores
             livro.Autores.Clear();
             foreach (var aid in vm.AutoresSelecionados)
             {
@@ -273,6 +348,11 @@ public class LivrosController : Controller
             if (!_context.Livros.Any(e => e.Id == vm.Id))
                 return NotFound("Livro não existe mais.");
             throw;
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = "Erro ao atualizar livro. Tente novamente.";
+            // Para debug: TempData["Error"] = $"Erro: {ex.Message}";
         }
 
         return RedirectToAction(nameof(Index));
@@ -324,5 +404,36 @@ public class LivrosController : Controller
 
         return RedirectToAction(nameof(Index));
     }
-}
 
+    // 🆕 Método adicional para regenerar capa de um livro existente
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> RegenerarCapa(int id)
+    {
+        var livro = await _context.Livros.FindAsync(id);
+        if (livro == null)
+        {
+            TempData["Error"] = "Livro não encontrado.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        try
+        {
+            var prompt = !string.IsNullOrWhiteSpace(livro.Descricao) 
+                ? $"{livro.Titulo} {livro.Descricao}" 
+                : livro.Titulo;
+            
+            livro.CapaUrl = await _imageService.GerarImagemAsync(prompt);
+            await _context.SaveChangesAsync();
+            
+            TempData["Success"] = "🎨 Capa regenerada com sucesso!";
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = "Erro ao regenerar capa. Tente novamente.";
+        }
+
+        return RedirectToAction(nameof(Details), new { id });
+    }
+}

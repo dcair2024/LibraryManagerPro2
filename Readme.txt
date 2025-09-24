@@ -1,121 +1,72 @@
 
-📝 README.md
 # 📚 LibraryManagerPro
 
-**LibraryManagerPro** é uma aplicação web completa para gerenciamento de livros e autores, construída com **ASP.NET Core MVC** e **Entity Framework Core**.  
-O projeto foi desenvolvido como parte de estudo e portfólio para demonstrar boas práticas de desenvolvimento, autenticação com Identity, CRUD completo e integração com API de geração de imagens.
+Sistema de gerenciamento de biblioteca feito em **ASP.NET Core MVC + EF Core**.  
+Este projeto é parte do meu portfólio e demonstra CRUD completo, autenticação com Identity, e **geração automática de capas de livros usando OpenAI DALL·E**.
 
 ---
 
-## 🚀 Funcionalidades
-
-✅ **Cadastro de Autores e Livros** (CRUD completo)  
-✅ **Relacionamento N:N** entre livros e autores  
-✅ **Autenticação e Autorização** com **ASP.NET Identity**  
-✅ **Área administrativa** para gerenciar cadastros (somente para usuários Admin)  
-✅ **Integração com API externa** (Flask) para geração automática de capas  
-✅ **Fallback inteligente** usando Unsplash para gerar capas mesmo offline  
-✅ **Banco de dados persistente** com **SQLite**  
-✅ **Seed de dados** (3 autores e 3 livros iniciais) apenas se o banco estiver vazio  
+## ✨ Funcionalidades
+- ✅ Cadastro, edição e exclusão de livros
+- ✅ Associação de autores aos livros (N:N)
+- ✅ Login e gerenciamento de usuários com Identity
+- ✅ **Geração de capa automática via IA**
+- ✅ Interface responsiva com Bootstrap
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
-
-- **C# 10 / .NET 6**
-- **ASP.NET Core MVC**
-- **Entity Framework Core (Code-First + Migrations)**
-- **SQLite**
-- **ASP.NET Identity**
-- **Bootstrap 5**
-- **Flask API (para geração de imagens)**
-- **Unsplash (fallback de imagens)**
+## 🚀 Tecnologias Usadas
+- ASP.NET Core 9
+- Entity Framework Core
+- SQLite
+- Identity
+- OpenAI API (DALL·E)
+- Bootstrap 5
 
 ---
 
-## 📷 Demonstração
+## 🖼️ Demonstração
 
-| 📚 Lista de Livros | 📖 Detalhes do Livro |
-|-----------------|-----------------|
-| ![Lista de Livros](./screenshots/lista-livros.png) | ![Detalhes do Livro](./screenshots/detalhes-livro.png) |
-
-| ➕ Criar Novo Livro | 🔑 Login Admin |
-|--------------------|---------------|
-| ![Criar Novo Livro](./screenshots/criar-livro.png) | ![Login Admin](./screenshots/login-admin.png) |
-
-
-## 🏗️ Estrutura do Projeto
-
-
-
-LibraryManagerPro/
-├── Controllers/
-│ ├── LivrosController.cs
-│ └── AutoresController.cs
-├── Models/
-│ ├── Livro.cs
-│ ├── Autor.cs
-│ └── ViewModels/
-├── Data/
-│ ├── LibraryContext.cs
-│ └── ApplicationDbContext.cs
-├── Services/
-│ ├── IImageService.cs
-│ └── FakeImageService.cs
-├── Views/
-│ ├── Livros/
-│ ├── Autores/
-│ └── Shared/
-└── Program.cs
-
+| Página | Exemplo |
+|-------|---------|
+| **Index de Livros** | ![Index Screenshot](./docs/screenshots/index.png) |
+| **Formulário de Criação** | ![Create Screenshot](./docs/screenshots/create.png) |
 
 ---
 
-## 🧑‍💻 Como Rodar o Projeto
+## ⚙️ Configuração Local
 
-1. **Clone o repositório**
+1. Clone o repositório  
+   ```bash
+   git clone https://github.com/dcair2024/LibraryManagerPro.git
+Crie o arquivo appsettings.Development.json na raiz do projeto:
 
-```bash
-git clone https://github.com/dcair2023/LibraryManagerPro.git
-cd LibraryManagerPro
-
-Restaure as dependências
-
-dotnet restore
+{
+  "OpenAI": {
+    "ApiKey": "sua-chave-aqui"
+  }
+}
 
 
-Rode o projeto
+Rode as migrations e inicie:
 
+dotnet ef database update
 dotnet run
 
 
-Acesse no navegador
+Acesse em http://localhost:5000
 
-https://localhost:7251
+📸 Screenshots
 
-🔑 Usuário Admin Padrão
+Coloque os screenshots em docs/screenshots e use o mesmo nome que está no README.
 
-Usuário	Senha
-cairo@teste.com	C@iro123
+🧠 Autor
 
-⚠️ Importante: altere a senha no ambiente de produção.
+Feito com 💻 e ☕ por Davi Santana Cairo
+🔗 Meu LinkedIn
 
-🌟 Diferenciais do Projeto
 
-Código limpo e organizado seguindo boas práticas de arquitetura
+---
 
-Uso de injeção de dependência para serviços
-
-Seeding de dados condicional para evitar sobrescrever o banco
-
-Capas de livros geradas automaticamente — experiência mais realista
-
-Pronto para ser usado como projeto de portfólio
-
-🧾 Licença
-
-Este projeto está sob a licença MIT. Sinta-se livre para usar e melhorar.
-
-📌 Autor: Davi Santana Cairo
-
-💡 "Só devo me preocupar com aquilo que eu posso mudar."
+Quer que eu prepare **o arquivo `.gitignore` completo para .NET** (já com o appsettings.Development ignorado) e te mande aqui para você só copiar e colar?  
+Assim você evita subir binários, cache e arquivos de config sensíveis.
