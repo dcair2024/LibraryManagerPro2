@@ -63,10 +63,6 @@ Coloque os screenshots em docs/screenshots e use o mesmo nome que está no READM
 🧠 Autor
 
 Feito com 💻 e ☕ por Davi Santana Cairo
-🔗 Meu LinkedIn
+🔗 https://www.linkedin.com/in/davi-santana-cairo-797a38141/
 
 
----
-
-Quer que eu prepare **o arquivo `.gitignore` completo para .NET** (já com o appsettings.Development ignorado) e te mande aqui para você só copiar e colar?  
-Assim você evita subir binários, cache e arquivos de config sensíveis.
